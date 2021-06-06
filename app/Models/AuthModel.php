@@ -74,8 +74,13 @@ class AuthModel extends Model
 
     }
 
-    public function registerReadeer($reader_email, $reader_pwd, $pdf_id, $pdf_name, $uploader_id)
+    public function registerReadeer($reader_email, $reader_name, $reader_pwd, $pdf_id, $pdf_name, $uploader_id)
     {
+        date_default_timezone_set('America/Los_Angeles');
+        $timezone = date_default_timezone_get();
+        // $date = date('m/d/Y');
+        // $timestemp = 
+
         $hash_pwd = Hash::make($reader_pwd);
         $already = DB::table('reader_tbl')
                         ->select('*')
@@ -85,7 +90,7 @@ class AuthModel extends Model
         if (count($already)>0) {
             return "already";
         } else {
-            $register = ['reader_email' => $reader_email, 'reader_pwd' => $hash_pwd, 'pdf_id' => $pdf_id, 'upload_user_id' => $uploader_id, 'reader_available' => '1'];
+            $register = ['reader_email' => $reader_email, 'reader_name' => $reader_name, 'reader_pwd' => $hash_pwd, 'pdf_id' => $pdf_id, 'upload_user_id' => $uploader_id, 'reader_available' => '1'];
             DB::table('reader_tbl')->insert($register);
             return "success";
         }
@@ -104,6 +109,15 @@ class AuthModel extends Model
         } else {
             return "no_member";
         }
+    }
+
+    public function getReaderData($user_email, $user_name, $user_id)
+    {
+        $get = DB::table('reader_tbl')
+                    ->select('reader_email', 'reader_name', 'reader_available', 'date')
+                    ->where('upload_user_id', '=', $user_id)
+                    ->get();
+        return $get;
     }
 
 }

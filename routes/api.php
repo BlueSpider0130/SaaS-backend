@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UploadController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,4 +33,5 @@ Route::post('/singleUp', [UploadController::class, 'singleUp']);
 Route::post( '/download', [UploadController::class, 'download']);
 Route::post('/registerReader', [AuthController::class, 'registerReader']);
 Route::post('/loginReader', [AuthController::class, 'loginReader']);
+Route::post('/getReaderData', [UploadController::class, 'getReaderData']);  //get reader data for table in front-end
 

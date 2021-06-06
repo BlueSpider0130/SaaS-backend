@@ -38,12 +38,13 @@ class AuthController extends Controller
 
     public function registerReader(Request $request){
         $reader_email = $request -> reader_email;
+        $reader_name = $request -> reader_name;
         $reader_pwd = $request -> reader_pwd;
         $pdf_id = $request -> pdf_id;
         $pdf_name = $request -> pdf_name;
         $uploader_id = $request -> uploader_id;
 
-        $register = $this -> auth -> registerReadeer($reader_email, $reader_pwd, $pdf_id, $pdf_name, $uploader_id);
+        $register = $this -> auth -> registerReadeer($reader_email, $reader_name, $reader_pwd, $pdf_id, $pdf_name, $uploader_id);
         return $register;
     }
 

@@ -68,4 +68,14 @@ class UploadController extends Controller
         }
         //This is  laravel back-end and
     }
+
+    public function getReaderData(Request $request)
+    {
+        $user_email = $request -> user_email;
+        $user_name = $request -> user_name;
+        $user_id = $request -> user_id;
+        $get_table = $this -> auth -> getReaderData($user_email, $user_name, $user_id);
+        return $get_table;
+    }
+
 }
