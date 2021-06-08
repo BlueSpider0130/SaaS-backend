@@ -78,4 +78,19 @@ class UploadController extends Controller
         return $get_table;
     }
 
+    public function setActiveAccount(Request $request)
+    {
+        $action_token = $request -> status;
+        $reader_id = $request -> reader_id;
+        $set = $this -> auth -> setActiveAccount($action_token, $reader_id);
+        return $set;
+    }
+
+    public function getPdfData(Request $request)
+    {
+        $user_id = $request -> user_id;
+        $get = $this -> auth -> getPdfData($user_id);
+        return $get;
+    }
+
 }

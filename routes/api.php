@@ -34,4 +34,7 @@ Route::post( '/download', [UploadController::class, 'download']);
 Route::post('/registerReader', [AuthController::class, 'registerReader']);
 Route::post('/loginReader', [AuthController::class, 'loginReader']);
 Route::post('/getReaderData', [UploadController::class, 'getReaderData']);  //get reader data for table in front-end
+Route::post('/setActiveAccount', [UploadController::class, 'setActiveAccount']); //set account to active or nonactive
+Route::post('/getPdfData', [UploadController::class, 'getPdfData']); //get pdf data from database
+Route::post('/changeInfo', [AuthController::class, 'changeInfo']); //change account info
 

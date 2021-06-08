@@ -36,7 +36,8 @@ class AuthController extends Controller
         return $login;
     }
 
-    public function registerReader(Request $request){
+    public function registerReader(Request $request)
+    {
         $reader_email = $request -> reader_email;
         $reader_name = $request -> reader_name;
         $reader_pwd = $request -> reader_pwd;
@@ -48,11 +49,24 @@ class AuthController extends Controller
         return $register;
     }
 
-    public function loginReader(Request $request){
+    public function loginReader(Request $request)
+    {
         $reader_email = $request -> reader_email;
 
         $login = $this -> auth -> loginReader($reader_email);
         return $login;
+    }
+
+    public function changeInfo(Request $request)
+    {
+        $user_id = $request -> u_id;
+        $user_name = $request -> u_name;
+        $user_email = $request -> u_email;
+        $current_pwd = $request -> u_current_pass;
+        $new_pwd = $request -> u_new_pass;
+
+        $change = $this -> auth -> changeInfo($user_id, $user_name, $user_email, $current_pwd, $new_pwd);
+        return $change;
     }
 
 }

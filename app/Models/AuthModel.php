@@ -66,9 +66,15 @@ class AuthModel extends Model
                         ->insert($pdf_data);
                         
         $onePDF = DB::table('pdf_tbl')
-        ->select('*')
-        ->where('pdf_random_name', '=', $name)
-        ->first();
+                        ->select('*')
+                        ->where('pdf_random_name', '=', $name)
+                        ->first();
+        $pdf_id = $onePDF -> pdf_id;
+        $link = "http://192.168.110.94:5700/" . $pdf_id . "/" . $name . "/" . $user_id;
+        $add_link = ['download_link' => $link];
+        DB::table('pdf_tbl')
+                        ->where('pdf_id', '=', $pdf_id)
+                        ->update($add_link);
         return ["success",$onePDF];
         
 
@@ -78,8 +84,6 @@ class AuthModel extends Model
     {
         date_default_timezone_set('America/Los_Angeles');
         $timezone = date_default_timezone_get();
-        // $date = date('m/d/Y');
-        // $timestemp = 
 
         $hash_pwd = Hash::make($reader_pwd);
         $already = DB::table('reader_tbl')
@@ -114,10 +118,58 @@ class AuthModel extends Model
     public function getReaderData($user_email, $user_name, $user_id)
     {
         $get = DB::table('reader_tbl')
-                    ->select('reader_email', 'reader_name', 'reader_available', 'date')
+                    ->select('reader_id','reader_email', 'reader_name', 'reader_available', 'date')
                     ->where('upload_user_id', '=', $user_id)
                     ->get();
         return $get;
+    }
+
+    public function setActiveAccount($action_token, $reader_id)
+    {
+        if ($action_token == true) {
+            $set = DB::table('reader_tbl')
+                        ->where('reader_id','=', $reader_id)
+                        ->update(['reader_available' => 1]);
+            return $set;
+        }else{
+            $set = DB::table('reader_tbl')
+                        ->where('reader_id','=', $reader_id)
+                        ->update(['reader_available' => 0]);
+            return $set;
+        }
+    }
+
+    public function getPdfData($user_id)
+    {
+        $get = DB::table('pdf_tbl')
+                    ->select('*')
+                    ->where('upload_user_id', '=', $user_id)
+                    ->get();
+
+        return $get;
+    }
+
+    public function changeInfo($user_id, $user_name, $user_email, $current_pwd, $new_pwd)
+    {
+        $new_hash = Hash::make($new_pwd);
+        $current_pwd_tbl = DB::table('user_tbl')
+                            ->select('user_pwd')
+                            ->where('user_id', '=', $user_id)
+                            ->get();
+        if ($current_pwd_tbl && Hash::check($current_pwd, $current_pwd_tbl[0] -> user_pwd)) {
+            DB::table('user_tbl')
+                    ->where('user_id','=', $user_id)
+                    ->update(['user_pwd' => $new_hash, 'user_email' => $user_email]);
+            DB::table('pdf_tbl')
+                    ->where('upload_user_id', '=', $user_id)
+                    ->update(['upload_user_email' => $user_email]);
+
+            return "success";
+        }elseif ($current_pwd_tbl && !Hash::check($current_pwd, $current_pwd_tbl[0] -> user_pwd)) {
+            return "wrong_pwd";
+        }else{
+            return "err";
+        }
     }
 
 }
