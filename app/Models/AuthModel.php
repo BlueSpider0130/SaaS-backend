@@ -85,15 +85,19 @@ class AuthModel extends Model
         date_default_timezone_set('America/Los_Angeles');
         $timezone = date_default_timezone_get();
 
-        $hash_pwd = Hash::make($reader_pwd);
+        $hash_pwd = Hash::make($reader_pwd); 
         $already = DB::table('reader_tbl')
                         ->select('*')
                         ->where('reader_email', '=', $reader_email)
+                        ->where('upload_user_id', '=', $uploader_id)
                         ->get();
-
-        if (count($already)>0) {
-            return "already";
-        } else {
+        $active = $already[0]->reader_available;
+        if (count($already)>0 && $active == 1) {
+            return "success";
+        }else if(count($already)>0 && $active == 0){
+            return "disable";
+        }
+        else {
             $register = ['reader_email' => $reader_email, 'reader_name' => $reader_name, 'reader_pwd' => $hash_pwd, 'pdf_id' => $pdf_id, 'upload_user_id' => $uploader_id, 'reader_available' => '1'];
             DB::table('reader_tbl')->insert($register);
             return "success";
@@ -101,16 +105,21 @@ class AuthModel extends Model
 
     }
 
-    public function loginReader($reader_email)
+    public function loginReader($reader_email, $uploader_id)
     {
         $loginReader = DB::table('reader_tbl')
                             ->select('*')
                             ->where('reader_email', '=', $reader_email)
+                            ->where('upload_user_id', '=', $uploader_id)
+                            // ->where('reader_available', '=', 1)  //account disabled!!!!!!!
                             ->get();
+        
 
-        if (count($loginReader) > 0) {
+        if (count($loginReader) > 0 && $loginReader[0] -> reader_available == 1) {
             return "success";
-        } else {
+        } else if (count($loginReader) > 0 && $loginReader[0] -> reader_available == 0) {
+            return "disable";
+        }else{
             return "no_member";
         }
     }

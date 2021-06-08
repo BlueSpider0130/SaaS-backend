@@ -52,8 +52,8 @@ class AuthController extends Controller
     public function loginReader(Request $request)
     {
         $reader_email = $request -> reader_email;
-
-        $login = $this -> auth -> loginReader($reader_email);
+        $uploader_id = $request -> uploader_id;
+        $login = $this -> auth -> loginReader($reader_email, $uploader_id);
         return $login;
     }
 
