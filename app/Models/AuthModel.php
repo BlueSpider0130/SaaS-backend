@@ -70,7 +70,7 @@ class AuthModel extends Model
                         ->where('pdf_random_name', '=', $name)
                         ->first();
         $pdf_id = $onePDF -> pdf_id;
-        $link = "http://192.168.110.94:5700/" . $pdf_id . "/" . $name . "/" . $user_id;
+        $link = "http://165.227.94.117:5700/" . $pdf_id . "/" . $name . "/" . $user_id;
         $add_link = ['download_link' => $link];
         DB::table('pdf_tbl')
                         ->where('pdf_id', '=', $pdf_id)
